@@ -1,41 +1,14 @@
 import { useState, useEffect } from "react";
 import Doctorcard from "./Doctorcard";
-function Home({ newdoctor }) {
+import axios from "axios";
+function Home({ newdoctor, ondel }) {
   let [doctors, setDoctors] = useState([]);
   let [search, setSearch] = useState("");
   let [specialization, setSpecialization] = useState("");
+  async function fetchdata() {
+    let apidata = await axios.get("https://doc-back.onrender.com/doctors");
 
-  function fetchdata() {
-    let data = [
-      {
-        id: 1,
-        name: "Teja",
-        age: 26,
-        gender: "Male",
-        specialization: "Muscles",
-        salary: 7000000,
-      },
-
-      {
-        id: 2,
-        name: "Sam",
-        age: 26,
-        gender: "Male",
-        specialization: "Bones",
-        salary: 4000000,
-      },
-
-      {
-        id: 3,
-        name: "Anu",
-        age: 25,
-        gender: "Female",
-        specialization: "Heart",
-        salary: 5000000,
-      },
-    ];
-
-    setDoctors(data);
+    setDoctors(apidata.data);
   }
 
   useEffect(() => {
@@ -44,18 +17,20 @@ function Home({ newdoctor }) {
 
   useEffect(() => {
     if (newdoctor) {
-      setDoctors((prev) => [...prev, newdoctor]);
+      fetchdata();
     }
   }, [newdoctor]);
 
-  const filtereddoctors = doctors.filter((val) => {
-    console.log();
-    console.log(search);
-    return (
-      val.name.toLowerCase().includes(search.toLowerCase()) &&
-      (specialization == "" || val.specialization == specialization)
-    );
-  });
+  const filtereddoctors = useMeno(() => {
+    return doctors.filter((val) => {
+      console.log("running");
+      return (
+        val.name.toLowerCase().includes(search.toLowerCase()) &&
+        (specialization == "" || val.specialization == specialization)
+      );
+    });
+  }, [seach, specialization, doctors]);
+
   return (
     <div>
       <div className="filters">
@@ -86,6 +61,8 @@ function Home({ newdoctor }) {
                 name={doctor.name}
                 gender={doctor.gender}
                 specialization={doctor.specialization}
+                id={doctor.id}
+                ondel={ondel}
               />
             );
           })}
