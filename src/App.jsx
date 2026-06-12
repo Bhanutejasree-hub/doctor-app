@@ -1,44 +1,34 @@
-import Doctorcard from "./components/Doctorcard";
 import Navbar from "./components/Navbar";
 import Section from "./components/Section";
 import "./components/styles.css";
 import Addnewdoctor from "./components/Addnewdoctor";
-// import { useEffect } from "react"
-
+import { Route, Routes } from "react-router-dom";
+import Doctordetails from "./components/Doctordetails";
+import { useState } from "react";
+import Protectedroute from "./components/Protectedroute";
+import useCounter from "./components/useCounter";
 function App() {
-  // let [count,setCount]=useState(0)
-
-  //   console.log('comp is')
-  //   console.log('running')
-
-  // function inccount(){
-  //   setCount(count+1)
-  //   console.log(count)
-  // }
-
-  // useEffect(()=>{
-  //   console.log('useeffect is running')
-  // },[count])
+  const [islogin, setIslogin] = useState(false);
+  const { count, increment, decrement } = useState(false);
   return (
     <div>
-      {/* {count}
-    <button onClick={inccount}>click to increase</button> */}
       <Navbar />
-      <Section />
-      <div className="doctorparent">
-        <Doctorcard name="Sivaram" specialization="Bones" gender="male" />
-        <Doctorcard name="Teja" specialization="Muscles" gender="male" />
-        <Doctorcard name="Vasavi" specialization="phsycho" gender="female" />
-        <Doctorcard name="Madhu" specialization="Orthocare" gender="male" />
-        <Doctorcard
-          name="Aditya"
-          specialization="Skin specialist"
-          gender="male"
+      {count}
+      <button onClick={increment}>inc</button>
+      <button onClick={decrement}>dec</button>
+      <button onClick={() => setIslogin(true)}>click to login</button>
+      <Routes>
+        <Route path="/" element={<Section />} />
+        <Route
+          path="/add-doctor"
+          element={
+            <Protectedroute islogin={islogin}>
+              <Addnewdoctor />
+            </Protectedroute>
+          }
         />
-        <Doctorcard name="John" specialization="Lungs" gender="male" />
-      </div>
-      {/* call here */}
-      <Addnewdoctor />
+        <Route path="/doctor/:id" element={<Doctordetails />} />
+      </Routes>
     </div>
   );
 }
