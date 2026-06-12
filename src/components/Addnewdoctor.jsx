@@ -1,5 +1,7 @@
 import { useState } from "react";
 import Home from "./Home";
+
+import axios from "axios";
 function Addnewdoctor() {
   const [name, setName] = useState("");
   const [gender, setGender] = useState("");
@@ -8,7 +10,7 @@ function Addnewdoctor() {
   const [specialization, setSpecialization] = useState("");
   let [newdoctor, setNewdoctor] = useState(null);
 
-  function handlesubmit(e) {
+  async function handlesubmit(e) {
     e.preventDefault();
     let formdata = {
       name,
@@ -18,7 +20,27 @@ function Addnewdoctor() {
       specialization,
       id: Date.now(),
     };
+    await axios.post("https://doc-back.onrender.com/doctors", formdata);
+    alert("Doctor Added Successfully");
     setNewdoctor(formdata);
+  }
+  async function deletedata(id) {
+    await axios.delete(`https://doc-back.onrender.com/doctors/${id}`);
+    alert("doctor deleted");
+    setNewdoctor("deleted" + id);
+  }
+  async function updatedata(id) {
+    let data = {
+      name: "Manohar",
+      age: "57",
+      gender: "Male",
+      salary: "8900000",
+      specialization: "Surgeon",
+      id: Date.now(),
+    };
+    await axios.put(`https://doc-back.onrender.com/doctors/${id}`);
+    alert("updated");
+    setNewdoctor("updated" + id);
   }
 
   return (
@@ -67,7 +89,7 @@ function Addnewdoctor() {
         />
         <button type="submit"> Add Doctor</button>
       </form>
-      <Home newdoctor={newdoctor} />
+      <Home newdoctor={newdoctor} ondel={deletedata} />
     </div>
   );
 }
